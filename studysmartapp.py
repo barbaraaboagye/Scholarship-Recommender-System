@@ -78,8 +78,8 @@ def video():
         st.video(video_url_2)
 
 #if __name__ == "__main__":
-         input_parameters()
-         video()
+         #input_parameters()
+         #video()
 
 
 df = input_parameters()
