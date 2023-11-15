@@ -64,12 +64,12 @@ def video():
     st.title("Useful Videos for Graduate School Application ")
 
     # Example 1: Embedding a video from a URL
-    st.header("Example 1: Embedding a video from a URL")
+    st.header("Writing an award winning CV and Statement of purpose")
     video_url_1 = "https://youtu.be/1UMizceVMuA?si=6y7IsBx2FgjL3SX9"
     video_url_2 = "https://www.youtube.com/watch?v=eNptCxlr3tk&list=PLebQgfnH5Iquqx3H2Y3WZS7qi9zgcPq-Q"
 
     # Using columns to display videos side by side
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
 
     with col1:
         st.video(video_url_1)
