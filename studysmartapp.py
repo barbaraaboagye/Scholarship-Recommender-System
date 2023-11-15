@@ -60,10 +60,30 @@ def input_parameters():
             st.write(f" {i}.{scholarship['Name']}")
     return field, country,specializations,recommended_scholarships
 
-# Ask the user to enter their area of specialization
-#user_specialization = field.lower()
+def video():
+    st.title("Useful Videos for Graduate School Application ")
 
-df = input_parameters()
+    # Example 1: Embedding a video from a URL
+    st.header("Example 1: Embedding a video from a URL")
+    video_url_1 = "https://youtu.be/1UMizceVMuA?si=6y7IsBx2FgjL3SX9"
+    video_url_2 = "https://www.youtube.com/watch?v=eNptCxlr3tk&list=PLebQgfnH5Iquqx3H2Y3WZS7qi9zgcPq-Q"
+
+    # Using columns to display videos side by side
+    col1, col2 = st.beta_columns(2)
+
+    with col1:
+        st.video(video_url_1)
+
+    with col2:
+        st.video(video_url_2)
+
+if __name__ == "__main__":
+         input_parameters()
+         main()
+
+
+
+#df = input_parameters()
 
 
 st.write ("""  # What do you do next with this information? 
