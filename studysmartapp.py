@@ -83,7 +83,7 @@ def video():
 
 
 df = input_parameters()
-vid = video()
+
 
 
 st.write ("""  # What do you do next with this information? 
@@ -96,3 +96,4 @@ st.write ("""
         - Read the admission requirements, gather the documents, cold email, pay application fee if neccessary and apply
           """)
 
+vid = video()
