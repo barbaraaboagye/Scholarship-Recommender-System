@@ -55,9 +55,9 @@ def input_parameters():
         st.write("Unfortunately, there are no scholarships for your specialization. Try another closely related field or type *All disciplines* for your field on interest.")
     else:
         num_scholarships = len(recommended_scholarships)
-        st.write("I have st.write (num_scholarships)suggestions for you in st.write(user_specialization).\n Here are the scholarships/universities to start your search:\n ")
-        for index, scholarship in recommended_scholarships.iterrows():
-            st.write( scholarship['Name'])
+        st.write(f"I have {num_scholarships} suggestions for you in {user_specialization}.\n Here are the scholarships/universities to start your search:\n ")
+        for i, (index, scholarship) in enumerate(recommended_scholarships.iterrows(),start =1):
+            st.write(f" {i}.{scholarship['Name']}")
     return field, country,specializations,recommended_scholarships
 
 # Ask the user to enter their area of specialization
