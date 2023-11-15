@@ -77,12 +77,13 @@ def video():
     with col2:
         st.video(video_url_2)
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
          input_parameters()
          video()
 
 
-#df = input_parameters()
+df = input_parameters()
+vid = video()
 
 
 st.write ("""  # What do you do next with this information? 
