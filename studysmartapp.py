@@ -79,8 +79,7 @@ def video():
 
 if __name__ == "__main__":
          input_parameters()
-         main()
-
+         video()
 
 
 #df = input_parameters()
