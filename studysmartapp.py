@@ -52,7 +52,7 @@ def input_parameters():
     recommended_scholarships = recommended_scholarships.drop_duplicates(subset=['Name'])
     # Check if there are any recommended scholarships
     if recommended_scholarships.empty:
-        st.write("Unfortunately, there are no scholarships for your specialization. Try another closely related field or type *All disciplines* for your field on interest.")
+        st.write("If you don't find a scholarship in your field, try a closely related field or type *All disciplines* for your field on interest.")
     else:
         num_scholarships = len(recommended_scholarships)
         st.write(f"I have {num_scholarships} suggestions for you in {user_specialization}.\n Here are the scholarships/universities to start your search:\n ")
