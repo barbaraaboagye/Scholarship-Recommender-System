@@ -59,14 +59,13 @@ def input_parameters():
         for i, (index, scholarship) in enumerate(recommended_scholarships.head(10).iterrows(),start =1):
             st.write(f" {i}.{scholarship['Name']}")
                  
-         if num_scholarships > 10:
-            read_more_button = st.button("Read More")
-            if read_more_button:
-                # Display the rest of the scholarships
-                for i, (index, scholarship) in enumerate(recommended_scholarships.iloc[10:].iterrows(), start=11):
-                    st.write(f"{i}. {scholarship['Name']}")
-                         
-    return field, country,specializations,recommended_scholarships
+         if num_scholarships > 10 :
+                  read_more_button = st.button("Read More")
+                  if read_more_button:
+                           # Display the rest of the scholarships
+                           for i, (index, scholarship) in enumerate(recommended_scholarships.iloc[10:].iterrows(), start=11):
+                                    st.write(f"{i}. {scholarship['Name']}")
+         return field, country,specializations,recommended_scholarships
 
 def video():
     st.title("Useful Videos for Graduate School Application ")
