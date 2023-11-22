@@ -56,8 +56,17 @@ def input_parameters():
     else:
         num_scholarships = len(recommended_scholarships)
         st.write(f"I have {num_scholarships} suggestions for you in {user_specialization}.\n Here are the scholarships/universities to start your search:\n ")
-        for i, (index, scholarship) in enumerate(recommended_scholarships.iterrows(),start =1):
+        for i, (index, scholarship) in enumerate(recommended_scholarships.head(10).iterrows(),start =1):
             st.write(f" {i}.{scholarship['Name']}")
+
+# Display "Read More" button if there are more than 10 scholarships
+         if num_scholarships > 10:
+            read_more_button = st.button("Read More")
+            if read_more_button:
+                # Display the rest of the scholarships
+                for i, (index, scholarship) in enumerate(recommended_scholarships.iloc[10:].iterrows(), start=11):
+                    st.write(f"{i}. {scholarship['Name']}")
+                         
     return field, country,specializations,recommended_scholarships
 
 def video():
