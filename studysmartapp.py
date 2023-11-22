@@ -21,15 +21,21 @@ st.sidebar.header("User input details")
 def input_parameters():
     field = st.sidebar.text_input("What field are you looking for a scholarship in?")
     user_specialization = field.lower()
-    country = st.sidebar.text_input("What country are you looking for a scholarship in?")
+    level = st.sidebar.selectbox("What level?", (' ','Diploma', 'BSc', 'MSc', 'MBA','LLM','MPH','MA','MFA', 'MPHIL' ,'PhD','Post doc'))
+    level =level.lower()
     data = {'Field' : field,
-            "country" : country}
+            "Level" : level}
     scholarship_df = pd.read_csv('scholarship_df.csv')
-    #st.dataframe(scholarship_df)
+  
+  
     # # Convert the 'Area of Specialisation' column in the DataFrame to lowercase for case-insensitive matching
     scholarship_df['Area of specialisation'] = scholarship_df['Area of specialisation'].str.lower()
+    
+    # Filter scholarships based on the chosen level
+    filtered_scholarships = scholarship_df[scholarship_df['Level needed'].str.lower() == level]
+
     # Create a list of specializations from your DataFrame
-    specializations = scholarship_df['Area of specialisation'].unique().tolist()
+    specializations = filtered_scholarships['Area of specialisation'].unique().tolist()
      # Initialize a dictionary to store similarity scores
     similarity_scores = {}
 
@@ -46,26 +52,38 @@ def input_parameters():
     matched_specializations = [spec for spec, score in sorted_specializations if score >= threshold]
 
     # Filter scholarships based on matched specializations
-    recommended_scholarships = scholarship_df[scholarship_df['Area of specialisation'].isin(matched_specializations)]
+    recommended_scholarships = filtered_scholarships[filtered_scholarships['Area of specialisation'].isin(matched_specializations)]
 
     # Remove duplicate scholarships based on their names
     recommended_scholarships = recommended_scholarships.drop_duplicates(subset=['Name'])
     # Check if there are any recommended scholarships
     if recommended_scholarships.empty:
-        st.write("If you don't find a scholarship in your field, try a closely related field or type *All disciplines* for your field on interest.")
+        st.write(f" There is currently no scholarships in {field} for {level.upper()} at this moment in the database. Try a closely related field or type *All disciplines* for your field on interest.")
     else:
         num_scholarships = len(recommended_scholarships)
-        st.write(f"I have {num_scholarships} suggestions for you in {user_specialization}.\n Here are the scholarships/universities to start your search:\n ")
+        st.write(f"I have {num_scholarships} suggestions for you in {user_specialization} for {level} opportunities.\n Here are the scholarships/universities to start your search:\n ")
         for i, (index, scholarship) in enumerate(recommended_scholarships.head(10).iterrows(),start =1):
             st.write(f" {i}.{scholarship['Name']}")
                  
-         if num_scholarships > 10 :
-                  read_more_button = st.button("Read More")
-                  if read_more_button:
-                           # Display the rest of the scholarships
-                           for i, (index, scholarship) in enumerate(recommended_scholarships.iloc[10:].iterrows(), start=11):
-                                    st.write(f"{i}. {scholarship['Name']}")
-         return field, country,specializations,recommended_scholarships
+        if num_scholarships > 10 :
+                read_more_button = st.button("Read More")
+                if read_more_button:
+                         # Display the rest of the scholarships
+                        for i, (index, scholarship) in enumerate(recommended_scholarships.iloc[10:].iterrows(), start=11):
+                            st.write(f"{i}. {scholarship['Name']}")
+        return field, level,specializations,recommended_scholarships
+    
+    
+def contact_information():
+    st.sidebar.header("Contact Information")
+    st.sidebar.write("This database was prepared by Barbara Aboagye.")
+    st.sidebar.write("Contact me and let's be friends:")
+    
+    st.sidebar.write("- Youtube: [@BarbaraAboagye](https://www.youtube.com/channel/UCEYKFq7ZEg81GYxpzNqYZ4Q)")
+    st.sidebar.write("- Instagram: [@asantewaa_aboagye](https://www.instagram.com/asantewaa_aboagye)")
+    st.sidebar.write("- Twitter: [@awesome_ama](https://twitter.com/@awesome_ama)")
+    st.sidebar.write("- Email:[Barbara](barbaraaboagye2@gmail.com)")
+
 
 def video():
     st.title("Useful Videos for Graduate School Application ")
@@ -90,7 +108,7 @@ def video():
 
 
 df = input_parameters()
-
+contact = contact_information()
 
 
 st.write ("""  # What do you do next with this information? 
