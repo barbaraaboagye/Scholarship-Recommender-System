@@ -33,8 +33,7 @@ def input_parameters():
     level = level.lower()
 
     find_scholarships_button = st.sidebar.button("Find Scholarships", on_click=callback)
-
-   contact_information()
+    contact_information()
 
     return user_specialization, level, find_scholarships_button
 
