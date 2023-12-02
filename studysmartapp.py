@@ -5,74 +5,98 @@ from fuzzywuzzy import fuzz
 
 
 
-st.write("""
-         # School and Scholarship Recommender System
-        
-         Find schools and sholarships in your field of study in 5 secs
-        """ )
+
 
 st.sidebar.header("User input details") 
 
 
-#st.write(field)
+def front_page():
+   
+    st.title("Welcome to the School and Scholarship Search App (3SA)!")
+    st.write('Find schools and sholarships in your field of study in 5 secs')
+    st.write("To find scholarships, please follow these steps:")
+    st.write("1. Enter the field you are looking for a scholarship in.")
+    st.write("2. Select the level of scholarship you are interested in (e.g., BSc, MSc, PhD).")
+    st.write("3. Click the 'Find Scholarships' button to see the recommendations.")
+    st.write("Discover opportunities and share with friends!")
 
-
-
+def callback():
+    st.session_state.find_scholarships_button = True
+    
+    
 def input_parameters():
+    # Use st.sidebar.text_input and st.sidebar.selectbox with the default values
     field = st.sidebar.text_input("What field are you looking for a scholarship in?")
     user_specialization = field.lower()
-    level = st.sidebar.selectbox("What level?", (' ','Diploma', 'BSc', 'MSc', 'MBA','LLM','MPH','MA','MFA', 'MPHIL' ,'PhD','Post doc'))
-    level =level.lower()
-    data = {'Field' : field,
-            "Level" : level}
-    scholarship_df = pd.read_csv('scholarship_df.csv')
-  
-  
-    # # Convert the 'Area of Specialisation' column in the DataFrame to lowercase for case-insensitive matching
-    scholarship_df['Area of specialisation'] = scholarship_df['Area of specialisation'].str.lower()
-    
-    # Filter scholarships based on the chosen level
-    filtered_scholarships = scholarship_df[scholarship_df['Level needed'].str.lower() == level]
 
-    # Create a list of specializations from your DataFrame
-    specializations = filtered_scholarships['Area of specialisation'].unique().tolist()
-     # Initialize a dictionary to store similarity scores
-    similarity_scores = {}
+    level = st.sidebar.selectbox("What level?", (' ', 'Diploma', 'BSc', 'MSc', 'MBA', 'LLM', 'MPH', 'MA', 'MFA', 'MPHIL', 'PhD', 'Post doc'))
+    level = level.lower()
 
-    # Calculate similarity scores between the user's input and specializations
-    for spec in specializations:
-        similarity_score = fuzz.partial_ratio(user_specialization, spec.lower())
-        similarity_scores[spec] = similarity_score
+    find_scholarships_button = st.sidebar.button("Find Scholarships", on_click=callback)
 
-    # Sort specializations by similarity score in descending order
-    sorted_specializations = sorted(similarity_scores.items(), key=lambda x: x[1], reverse=True)
+    return user_specialization, level, find_scholarships_button
 
-    # Extract matched specializations with a similarity score threshold (e.g., 80)
-    threshold = 80  # Adjust as needed
-    matched_specializations = [spec for spec, score in sorted_specializations if score >= threshold]
 
-    # Filter scholarships based on matched specializations
-    recommended_scholarships = filtered_scholarships[filtered_scholarships['Area of specialisation'].isin(matched_specializations)]
+def SSA(user_specialization, level, find_scholarships_button):
+    st.title('Results')
+    # Initialize variables
+    specializations = []
+    recommended_scholarships = pd.DataFrame()  # Initialize an empty DataFrame
 
-    # Remove duplicate scholarships based on their names
-    recommended_scholarships = recommended_scholarships.drop_duplicates(subset=['Name'])
-    # Check if there are any recommended scholarships
-    if recommended_scholarships.empty:
-        st.write(f" There is currently no scholarships in {field} for {level.upper()} at this moment in the database. Try a closely related field or type *All disciplines* for your field on interest.")
-    else:
+    if find_scholarships_button:
+        scholarship_df = pd.read_csv('scholarship_df.csv')
+
+        # Convert the 'Area of Specialization' column in the DataFrame to lowercase for case-insensitive matching
+        scholarship_df['Area of specialisation'] = scholarship_df['Area of specialisation'].str.lower()
+
+        # Filter scholarships based on the chosen level
+        filtered_scholarships = scholarship_df[scholarship_df['Level needed'].str.lower() == level]
+
+        # Update the list of specializations
+        specializations = filtered_scholarships['Area of specialisation'].unique().tolist()
+
+        # Initialize a dictionary to store similarity scores
+        similarity_scores = {}
+
+        # Calculate similarity scores between the user's input and specializations
+        for spec in specializations:
+            similarity_score = fuzz.partial_ratio(user_specialization, spec.lower())
+            similarity_scores[spec] = similarity_score
+
+        # Sort specializations by similarity score in descending order
+        sorted_specializations = sorted(similarity_scores.items(), key=lambda x: x[1], reverse=True)
+
+        # Extract matched specializations with a similarity score threshold (e.g., 80)
+        threshold = 80  # Adjust as needed
+        matched_specializations = [spec for spec, score in sorted_specializations if score >= threshold]
+
+        # Filter scholarships based on matched specializations
+        recommended_scholarships = filtered_scholarships[filtered_scholarships['Area of specialisation'].isin(matched_specializations)]
+
+        # Remove duplicate scholarships based on their names
+        recommended_scholarships = recommended_scholarships.drop_duplicates(subset=['Name'])
+
+    # Display the first 10 scholarships only if find_scholarships_button is True
+    if find_scholarships_button:
         num_scholarships = len(recommended_scholarships)
-        st.write(f"I have {num_scholarships} suggestions for you in {user_specialization} for {level} opportunities.\n Here are the scholarships/universities to start your search:\n ")
-        for i, (index, scholarship) in enumerate(recommended_scholarships.head(10).iterrows(),start =1):
-            st.write(f" {i}.{scholarship['Name']}")
-                 
-        if num_scholarships > 10 :
+
+        if num_scholarships > 0:
+            st.write(f"I have {num_scholarships} suggestions for you in {user_specialization} for {level} opportunities.\n Here are the scholarships/universities to start your search:\n ")
+            
+            for i, (index, scholarship) in enumerate(recommended_scholarships.head(10).iterrows(), start=1):
+                st.write(f" {i}.{scholarship['Name']}")
+                
+            # Display "Read More" button if there are more than 10 scholarships
+            if num_scholarships > 10:
                 read_more_button = st.button("Read More")
                 if read_more_button:
-                         # Display the rest of the scholarships
-                        for i, (index, scholarship) in enumerate(recommended_scholarships.iloc[10:].iterrows(), start=11):
-                            st.write(f"{i}. {scholarship['Name']}")
-        return field, level,specializations,recommended_scholarships
-    
+                    # Display the rest of the scholarships
+                    for i, (index, scholarship) in enumerate(recommended_scholarships.iloc[10:].iterrows(), start=11):
+                        st.write(f"{i}. {scholarship['Name']}")
+        else:
+            st.write(f"There is currently no scholarships in {user_specialization} for {level.upper()} at this moment in the database. Try a closely related field or type *All disciplines* for your field of interest.")
+
+
     
 def contact_information():
     st.sidebar.header("Contact Information")
@@ -106,9 +130,10 @@ def video():
          #input_parameters()
          #video()
 
-
-df = input_parameters()
-contact = contact_information()
+front_page = front_page()
+user_specialization,level,find_scholarships_button = input_parameters()
+df2 = SSA(user_specialization,level,find_scholarships_button)
+#contact = contact_information()
 
 
 st.write ("""  # What do you do next with this information? 
