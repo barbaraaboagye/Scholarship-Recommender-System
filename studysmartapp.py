@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 from fuzzywuzzy import fuzz
-from annotated_text import annotated_text
-
 
 
 
